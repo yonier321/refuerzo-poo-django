@@ -48,8 +48,6 @@ class DetalleOrden(models.Model):
     cantidad = models.IntegerField()
     precio_unitario= models.DecimalField(max_digits=10, decimal_places=2)
     
-    def save(self, *args, **kwargs):
-        self.subtotal = self.cantidad * self.precio_unitario
-        super().save(*args, **kwargs)
+   
     
 

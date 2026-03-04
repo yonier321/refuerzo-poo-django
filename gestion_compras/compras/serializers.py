@@ -53,37 +53,30 @@ class OrdenCompraSerializer(serializers.ModelSerializer):
                 "No se puede crear orden con el proveedor inactivo."
             )
         return data 
-    
-def update(self, instance, validated_data):
-    estado_anterior= instance.estado
-    nuevo_estado = validated_data.get('estado', instance.estado)
-    
-    instance.estado = nuevo_estado
-    instance.save()
-    
-      # Si se aprueba la orden
-    if estado_anterior != 'aprobada' and nuevo_estado == 'aprobada':
-        total = 0
-        
-        
-        for detalle in instance.detalles.all():
-             total += detalle.subtotal
-             
-            # Regla 5: actualizar stock
-             producto = detalle.producto
-             producto.stock += detalle.cantidad 
-             producto.save() 
-             
-             
-             
-        instance.total = total
+
+    def update(self, instance, validated_data):
+        estado_anterior = instance.estado
+        nuevo_estado = validated_data.get('estado', instance.estado)
+
+        instance.estado = nuevo_estado
         instance.save()
-        
-    return instance
-        
-        
-             
-             
+
+        # Si se aprueba la orden
+        if estado_anterior != 'aprobada' and nuevo_estado == 'aprobada':
+            total = 0
+
+            for detalle in instance.detalles.all():
+                total += detalle.subtotal
+
+                # Regla 5: actualizar stock
+                producto = detalle.producto
+                producto.stock += detalle.cantidad
+                producto.save()
+
+            instance.total = total
+            instance.save()
+
+        return instance
        
         
         
